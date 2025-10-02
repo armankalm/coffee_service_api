@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="2" author="arman">
+
+        <!-- Города -->
+        <insert tableName="cities">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Алматы"/>
+        </insert>
+        <insert tableName="cities">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Астана"/>
+        </insert>
+
+        <!-- Кофейни -->
+        <insert tableName="shops">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Coffee Point"/>
+            <column name="address" value="ул. Абая, 10"/>
+            <column name="city_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="shops">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Espresso Bar"/>
+            <column name="address" value="пр. Достык, 55"/>
+            <column name="city_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="shops">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Latte House"/>
+            <column name="address" value="ул. Байтурсынова, 7"/>
+            <column name="city_id" valueNumeric="2"/>
+        </insert>
+
+        <!-- Меню -->
+        <insert tableName="menu_items">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Американо"/>
+            <column name="price" valueNumeric="1000"/>
+            <column name="shop_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="menu_items">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Капучино"/>
+            <column name="price" valueNumeric="1200"/>
+            <column name="shop_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="menu_items">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Эспрессо"/>
+            <column name="price" valueNumeric="900"/>
+            <column name="shop_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="menu_items">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Флэт Уайт"/>
+            <column name="price" valueNumeric="1500"/>
+            <column name="shop_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
