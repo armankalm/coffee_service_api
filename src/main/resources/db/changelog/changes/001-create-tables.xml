@@ -6,6 +6,8 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <changeSet id="1" author="arman">
+
+        <!-- Города -->
         <createTable tableName="cities">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -15,6 +17,7 @@
             </column>
         </createTable>
 
+        <!-- Кофейни -->
         <createTable tableName="shops">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -29,6 +32,7 @@
             </column>
         </createTable>
 
+        <!-- Меню -->
         <createTable tableName="menu_items">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -44,6 +48,64 @@
                              referencedTableName="shops" referencedColumnNames="id"/>
             </column>
         </createTable>
+
+        <!-- Пользователи (Telegram) -->
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="telegram_id" type="BIGINT" unique="true"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="photo_url" type="VARCHAR(512)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Заказы -->
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_orders_user"
+                             referencedTableName="users" referencedColumnNames="id"/>
+            </column>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_orders_shop"
+                             referencedTableName="shops" referencedColumnNames="id"/>
+            </column>
+            <column name="status" type="VARCHAR(50)" defaultValue="pending">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Позиции заказа -->
+        <createTable tableName="order_items">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_order_items_order"
+                             referencedTableName="orders" referencedColumnNames="id"/>
+            </column>
+            <column name="menu_item_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_order_items_menu"
+                             referencedTableName="menu_items" referencedColumnNames="id"/>
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
     </changeSet>
 
 </databaseChangeLog>
