@@ -1,18 +1,20 @@
 package com.example.coffee_service_api.service.impl;
 
+import com.example.coffee_service_api.dto.CreateOrderRequest;
 import com.example.coffee_service_api.dto.OrderDto;
 import com.example.coffee_service_api.dto.OrderItemDto;
-import com.example.coffee_service_api.model.MenuItem;
-import com.example.coffee_service_api.model.Order;
-import com.example.coffee_service_api.model.OrderItem;
-import com.example.coffee_service_api.model.Shop;
+import com.example.coffee_service_api.model.*;
 import com.example.coffee_service_api.repo.MenuItemRepository;
 import com.example.coffee_service_api.repo.OrderRepository;
 import com.example.coffee_service_api.repo.ShopRepository;
+import com.example.coffee_service_api.repo.UserRepository;
 import com.example.coffee_service_api.service.abs.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ShopRepository shopRepository;
     private final MenuItemRepository menuItemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<OrderDto> getAllOrders() {
@@ -40,8 +43,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto createOrder(OrderDto orderDto) {
-        Order order = toEntity(orderDto);
+    public OrderDto createOrder(CreateOrderRequest request) {
+        User currentUser = getCurrentUser();
+
+        if (currentUser.getSelectedShop() == null) {
+            throw new RuntimeException("Please select a shop first");
+        }
+
+        Order order = new Order();
+        order.setCustomerName(request.getCustomerName());
+        order.setShop(currentUser.getSelectedShop());
+        order.setUser(currentUser);
+        order.setStatus("pending");
+        order.setCreatedAt(LocalDateTime.now());
+
+        List<OrderItem> items = request.getItems().stream()
+                .map(itemDto -> {
+                    MenuItem menuItem = menuItemRepository.findById(itemDto.getMenuItemId())
+                            .orElseThrow(() -> new RuntimeException("MenuItem not found"));
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setOrder(order);
+                    orderItem.setMenuItem(menuItem);
+                    orderItem.setQuantity(itemDto.getQuantity());
+                    return orderItem;
+                })
+                .collect(Collectors.toList());
+        order.setItems(items);
+
+        // Calculate total cost
+        int totalCost = items.stream()
+                .mapToInt(item -> item.getMenuItem().getPrice() * item.getQuantity())
+                .sum();
+        order.setTotalCost(totalCost);
+
         return toDto(orderRepository.save(order));
     }
 
@@ -90,6 +124,23 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<OrderDto> getMyOrders() {
+        User currentUser = getCurrentUser();
+        return orderRepository.findByUserOrderByCreatedAtDesc(currentUser)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // --- Helpers ---
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     // --- Mappers ---
     private OrderDto toDto(Order order) {
         return new OrderDto(
@@ -101,31 +152,8 @@ public class OrderServiceImpl implements OrderService {
                                 item.getMenuItem().getId(),
                                 item.getQuantity()
                         ))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                order.getTotalCost()
         );
-    }
-
-    private Order toEntity(OrderDto dto) {
-        Shop shop = shopRepository.findById(dto.getShopId())
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
-
-        Order order = new Order();
-        order.setCustomerName(dto.getCustomerName());
-        order.setShop(shop);
-
-        List<OrderItem> items = dto.getItems().stream()
-                .map(itemDto -> {
-                    MenuItem menuItem = menuItemRepository.findById(itemDto.getMenuItemId())
-                            .orElseThrow(() -> new RuntimeException("MenuItem not found"));
-                    OrderItem orderItem = new OrderItem();
-                    orderItem.setOrder(order);
-                    orderItem.setMenuItem(menuItem);
-                    orderItem.setQuantity(itemDto.getQuantity());
-                    return orderItem;
-                })
-                .collect(Collectors.toList());
-        order.setItems(items);
-
-        return order;
     }
 }

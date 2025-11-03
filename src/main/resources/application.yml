@@ -19,3 +19,7 @@ spring:
   sql:
     init:
       mode: always
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyForJWTTokenGenerationAndValidation1234567890}
+  expiration: 86400000 # 24 hours in milliseconds

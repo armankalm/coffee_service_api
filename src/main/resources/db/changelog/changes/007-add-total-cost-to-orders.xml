@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="7" author="arman">
+        <!-- Add total_cost to orders table -->
+        <addColumn tableName="orders">
+            <column name="total_cost" type="INT">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+
+        <!-- Update existing test orders with calculated total_cost -->
+        <!-- Order #1: 2x Американо (1000) + 1x Капучино (1200) = 3200 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="3200"/>
+            <where>id = 1</where>
+        </update>
+
+        <!-- Order #2: 3x Капучино (1200) = 3600 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="3600"/>
+            <where>id = 2</where>
+        </update>
+
+        <!-- Order #3: 1x Эспрессо (900) = 900 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="900"/>
+            <where>id = 3</where>
+        </update>
+
+        <!-- Order #4: 2x Эспрессо (900) = 1800 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="1800"/>
+            <where>id = 4</where>
+        </update>
+
+        <!-- Order #5: 1x Флэт Уайт (1500) = 1500 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="1500"/>
+            <where>id = 5</where>
+        </update>
+
+        <!-- Order #6: 2x Флэт Уайт (1500) = 3000 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="3000"/>
+            <where>id = 6</where>
+        </update>
+
+        <!-- Order #7: 1x Флэт Уайт (1500) = 1500 -->
+        <update tableName="orders">
+            <column name="total_cost" valueNumeric="1500"/>
+            <where>id = 7</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

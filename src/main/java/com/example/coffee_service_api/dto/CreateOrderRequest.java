@@ -9,10 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
-    private Long id;
+public class CreateOrderRequest {
     private String customerName;
-    private Long shopId;
     private List<OrderItemDto> items;
-    private Integer totalCost;
 }

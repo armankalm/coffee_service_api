@@ -7,5 +7,10 @@
 
     <include file="db/changelog/changes/001-create-tables.xml"/>
     <include file="db/changelog/changes/002-insert-test-data.xml"/>
+    <include file="db/changelog/changes/003-create-orders-tables.xml"/>
+    <include file="db/changelog/changes/004-create-users-table.xml"/>
+    <include file="db/changelog/changes/005-add-user-relations.xml"/>
+    <include file="db/changelog/changes/006-insert-test-users-and-orders.xml"/>
+    <include file="db/changelog/changes/007-add-total-cost-to-orders.xml"/>
 
 </databaseChangeLog>

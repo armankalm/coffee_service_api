@@ -24,6 +24,10 @@ public class Order {
     private String customerName;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
@@ -32,6 +36,8 @@ public class Order {
 
     private String status; // pending, preparing, ready, cancelled
 
+    private Integer totalCost; // общая стоимость в тенге
+
     private LocalDateTime createdAt;
 
     @Override
@@ -39,11 +45,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(customerName, order.customerName) && Objects.equals(shop, order.shop) && Objects.equals(items, order.items) && Objects.equals(status, order.status) && Objects.equals(createdAt, order.createdAt);
+        return Objects.equals(id, order.id) && Objects.equals(customerName, order.customerName) && Objects.equals(user, order.user) && Objects.equals(shop, order.shop) && Objects.equals(items, order.items) && Objects.equals(status, order.status) && Objects.equals(totalCost, order.totalCost) && Objects.equals(createdAt, order.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerName, shop, items, status, createdAt);
+        return Objects.hash(id, customerName, user, shop, items, status, totalCost, createdAt);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.coffee_service_api.controller;
 
+import com.example.coffee_service_api.dto.CreateOrderRequest;
 import com.example.coffee_service_api.dto.OrderDto;
 import com.example.coffee_service_api.service.abs.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,15 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<List<OrderDto>> getMyOrders() {
+        List<OrderDto> orders = orderService.getMyOrders();
+        return ResponseEntity.ok(orders);
+    }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
-        OrderDto createdOrder = orderService.createOrder(orderDto);
+    public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request) {
+        OrderDto createdOrder = orderService.createOrder(request);
         return ResponseEntity
                 .created(URI.create("/api/orders/" + createdOrder.getId()))
                 .body(createdOrder);

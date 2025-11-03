@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="6" author="arman">
+        <!-- Тестовые пользователи (пароль для всех: "password") -->
+        <insert tableName="users">
+            <column name="id" valueNumeric="1"/>
+            <column name="username" value="ivan"/>
+            <column name="password" value="$2a$10$7PtcjEnWb/ZkgyXY3Cpx4eu2UAjnxIu.nJPcYKXXp8Xyy6dW7e2C."/>
+            <column name="email" value="ivan@example.com"/>
+            <column name="phone" value="+77001234567"/>
+            <column name="role" value="USER"/>
+            <column name="selected_shop_id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2025-01-01T10:00:00"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueNumeric="2"/>
+            <column name="username" value="maria"/>
+            <column name="password" value="$2a$10$7PtcjEnWb/ZkgyXY3Cpx4eu2UAjnxIu.nJPcYKXXp8Xyy6dW7e2C."/>
+            <column name="email" value="maria@example.com"/>
+            <column name="phone" value="+77002345678"/>
+            <column name="role" value="USER"/>
+            <column name="selected_shop_id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2025-01-02T11:00:00"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueNumeric="3"/>
+            <column name="username" value="alex"/>
+            <column name="password" value="$2a$10$7PtcjEnWb/ZkgyXY3Cpx4eu2UAjnxIu.nJPcYKXXp8Xyy6dW7e2C."/>
+            <column name="email" value="alex@example.com"/>
+            <column name="phone" value="+77003456789"/>
+            <column name="role" value="USER"/>
+            <column name="selected_shop_id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2025-01-03T12:00:00"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueNumeric="4"/>
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$7PtcjEnWb/ZkgyXY3Cpx4eu2UAjnxIu.nJPcYKXXp8Xyy6dW7e2C."/>
+            <column name="email" value="admin@example.com"/>
+            <column name="phone" value="+77009999999"/>
+            <column name="role" value="ADMIN"/>
+            <column name="selected_shop_id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2025-01-01T09:00:00"/>
+            <column name="enabled" valueBoolean="true"/>
+        </insert>
+
+        <!-- Тестовые заказы -->
+
+        <!-- Заказы для ivan (user_id=1, shop_id=1) -->
+        <insert tableName="orders">
+            <column name="id" valueNumeric="1"/>
+            <column name="customer_name" value="Иван Иванов"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="shop_id" valueNumeric="1"/>
+            <column name="status" value="ready"/>
+            <column name="created_at" valueDate="2025-01-15T09:30:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="1"/>
+            <column name="quantity" valueNumeric="2"/>
+            <column name="menu_item_id" valueNumeric="1"/>
+            <column name="order_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="2"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="menu_item_id" valueNumeric="2"/>
+            <column name="order_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" valueNumeric="2"/>
+            <column name="customer_name" value="Иван Иванов"/>
+            <column name="user_id" valueNumeric="1"/>
+            <column name="shop_id" valueNumeric="1"/>
+            <column name="status" value="pending"/>
+            <column name="created_at" valueDate="2025-01-16T10:15:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="3"/>
+            <column name="quantity" valueNumeric="3"/>
+            <column name="menu_item_id" valueNumeric="2"/>
+            <column name="order_id" valueNumeric="2"/>
+        </insert>
+
+        <!-- Заказы для maria (user_id=2, shop_id=2) -->
+        <insert tableName="orders">
+            <column name="id" valueNumeric="3"/>
+            <column name="customer_name" value="Мария Петрова"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="shop_id" valueNumeric="2"/>
+            <column name="status" value="preparing"/>
+            <column name="created_at" valueDate="2025-01-15T14:00:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="4"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="menu_item_id" valueNumeric="3"/>
+            <column name="order_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" valueNumeric="4"/>
+            <column name="customer_name" value="Мария Петрова"/>
+            <column name="user_id" valueNumeric="2"/>
+            <column name="shop_id" valueNumeric="2"/>
+            <column name="status" value="ready"/>
+            <column name="created_at" valueDate="2025-01-14T11:30:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="5"/>
+            <column name="quantity" valueNumeric="2"/>
+            <column name="menu_item_id" valueNumeric="3"/>
+            <column name="order_id" valueNumeric="4"/>
+        </insert>
+
+        <!-- Заказы для alex (user_id=3, shop_id=3) -->
+        <insert tableName="orders">
+            <column name="id" valueNumeric="5"/>
+            <column name="customer_name" value="Алексей Сидоров"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="shop_id" valueNumeric="3"/>
+            <column name="status" value="pending"/>
+            <column name="created_at" valueDate="2025-01-16T15:45:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="6"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="menu_item_id" valueNumeric="4"/>
+            <column name="order_id" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" valueNumeric="6"/>
+            <column name="customer_name" value="Алексей Сидоров"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="shop_id" valueNumeric="3"/>
+            <column name="status" value="cancelled"/>
+            <column name="created_at" valueDate="2025-01-13T16:20:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="7"/>
+            <column name="quantity" valueNumeric="2"/>
+            <column name="menu_item_id" valueNumeric="4"/>
+            <column name="order_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" valueNumeric="7"/>
+            <column name="customer_name" value="Алексей Сидоров"/>
+            <column name="user_id" valueNumeric="3"/>
+            <column name="shop_id" valueNumeric="3"/>
+            <column name="status" value="ready"/>
+            <column name="created_at" valueDate="2025-01-12T13:00:00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="id" valueNumeric="8"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="menu_item_id" valueNumeric="4"/>
+            <column name="order_id" valueNumeric="7"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
