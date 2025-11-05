@@ -1,8 +1,6 @@
 package com.example.coffee_service_api.controller;
 
-import com.example.coffee_service_api.dto.AuthResponse;
-import com.example.coffee_service_api.dto.LoginRequest;
-import com.example.coffee_service_api.dto.RegisterRequest;
+import com.example.coffee_service_api.dto.*;
 import com.example.coffee_service_api.service.abs.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +13,13 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    @PostMapping("/send-code")
+    public ResponseEntity<SendCodeResponse> sendCode(@RequestBody SendCodeRequest request) {
+        return ResponseEntity.ok(authService.sendVerificationCode(request));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    @PostMapping("/verify-code")
+    public ResponseEntity<AuthResponse> verifyCode(@RequestBody VerifyCodeRequest request) {
+        return ResponseEntity.ok(authService.verifyCode(request));
     }
 }
