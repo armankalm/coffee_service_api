@@ -33,6 +33,8 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private String fullname;
+
     private String phone;
 
     @Enumerated(EnumType.STRING)

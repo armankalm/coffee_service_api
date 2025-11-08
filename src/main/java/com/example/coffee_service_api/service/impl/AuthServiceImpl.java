@@ -1,6 +1,9 @@
 package com.example.coffee_service_api.service.impl;
 
 import com.example.coffee_service_api.dto.*;
+import com.example.coffee_service_api.exception.BadRequestException;
+import com.example.coffee_service_api.exception.UnauthorizedException;
+import com.example.coffee_service_api.exception.ValidationException;
 import com.example.coffee_service_api.model.User;
 import com.example.coffee_service_api.model.VerificationCode;
 import com.example.coffee_service_api.repo.UserRepository;
@@ -39,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         String email = request.getEmail();
 
         if (email == null || email.isBlank() || !email.contains("@")) {
-            throw new RuntimeException("Invalid email address");
+            throw new ValidationException("Invalid email address");
         }
 
         // Delete old codes for this email
@@ -62,9 +65,10 @@ public class AuthServiceImpl implements AuthService {
         // Send email
         try {
             emailService.sendVerificationCode(email, code);
+            System.out.println("CODE__________ " + code);
         } catch (Exception e) {
             log.error("Failed to send verification code to {}", email, e);
-            throw new RuntimeException("Failed to send verification code. Please try again.");
+            throw new BadRequestException("Failed to send verification code. Please try again.");
         }
 
         return SendCodeResponse.builder()
@@ -80,21 +84,21 @@ public class AuthServiceImpl implements AuthService {
         String code = request.getCode();
 
         if (email == null || email.isBlank()) {
-            throw new RuntimeException("Email is required");
+            throw new ValidationException("Email is required");
         }
 
         if (code == null || code.isBlank()) {
-            throw new RuntimeException("Verification code is required");
+            throw new ValidationException("Verification code is required");
         }
 
         // Find verification code
         VerificationCode verificationCode = verificationCodeRepository
                 .findByEmailAndCodeAndUsedFalse(email, code)
-                .orElseThrow(() -> new RuntimeException("Invalid or expired verification code"));
+                .orElseThrow(() -> new UnauthorizedException("Invalid or expired verification code"));
 
         // Check if code is expired
         if (verificationCode.isExpired()) {
-            throw new RuntimeException("Verification code has expired");
+            throw new UnauthorizedException("Verification code has expired");
         }
 
         // Mark code as used
@@ -102,8 +106,15 @@ public class AuthServiceImpl implements AuthService {
         verificationCodeRepository.save(verificationCode);
 
         // Find or create user
-        User user = userRepository.findByEmail(email)
-                .orElseGet(() -> createNewUser(email));
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            if (request.getFullname() == null || request.getFullname().isBlank()) {
+                throw new ValidationException("Full name must be filled");
+            }
+
+            user = createNewUser(email, request.getFullname());
+        }
 
         // Generate JWT token
         String token = jwtUtil.generateToken(user);
@@ -116,13 +127,14 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private User createNewUser(String email) {
+    private User createNewUser(String email, String fullname) {
         // Generate username from email
         String username = email.split("@")[0] + "_" + System.currentTimeMillis();
 
         User user = User.builder()
                 .username(username)
                 .email(email)
+                .fullname(fullname)
                 .password("") // No password needed for email auth
                 .role(User.Role.USER)
                 .createdAt(LocalDateTime.now())

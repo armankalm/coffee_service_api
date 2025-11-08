@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .fullname(user.getFullname())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole().name())

@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SendCodeRequest {
     private String email;
+    private String fullname;
 }

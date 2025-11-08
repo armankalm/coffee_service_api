@@ -21,8 +21,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String customerName;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -40,16 +38,18 @@ public class Order {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime readyAt;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(customerName, order.customerName) && Objects.equals(user, order.user) && Objects.equals(shop, order.shop) && Objects.equals(items, order.items) && Objects.equals(status, order.status) && Objects.equals(totalCost, order.totalCost) && Objects.equals(createdAt, order.createdAt);
+        return Objects.equals(id, order.id) && Objects.equals(user, order.user) && Objects.equals(shop, order.shop) && Objects.equals(items, order.items) && Objects.equals(status, order.status) && Objects.equals(totalCost, order.totalCost) && Objects.equals(createdAt, order.createdAt) && Objects.equals(readyAt, order.readyAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerName, user, shop, items, status, totalCost, createdAt);
+        return Objects.hash(id, user, shop, items, status, totalCost, createdAt, readyAt);
     }
 }

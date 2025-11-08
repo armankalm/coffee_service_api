@@ -1,5 +1,6 @@
 package com.example.coffee_service_api.service.impl;
 
+import com.example.coffee_service_api.exception.BadRequestException;
 import com.example.coffee_service_api.service.abs.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -31,7 +32,7 @@ public class EmailServiceImpl implements EmailService {
             log.info("Verification code sent to: {}", to);
         } catch (MessagingException e) {
             log.error("Failed to send email to: {}", to, e);
-            throw new RuntimeException("Failed to send verification email", e);
+            throw new BadRequestException("Failed to send verification email");
         }
     }
 

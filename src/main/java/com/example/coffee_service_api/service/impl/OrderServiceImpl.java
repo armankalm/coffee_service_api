@@ -3,6 +3,9 @@ package com.example.coffee_service_api.service.impl;
 import com.example.coffee_service_api.dto.CreateOrderRequest;
 import com.example.coffee_service_api.dto.OrderDto;
 import com.example.coffee_service_api.dto.OrderItemDto;
+import com.example.coffee_service_api.exception.BadRequestException;
+import com.example.coffee_service_api.exception.ResourceNotFoundException;
+import com.example.coffee_service_api.exception.UnauthorizedException;
 import com.example.coffee_service_api.model.*;
 import com.example.coffee_service_api.repo.MenuItemRepository;
 import com.example.coffee_service_api.repo.OrderRepository;
@@ -39,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto getOrderById(Long id) {
         return orderRepository.findById(id)
                 .map(this::toDto)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
@@ -47,11 +50,10 @@ public class OrderServiceImpl implements OrderService {
         User currentUser = getCurrentUser();
 
         if (currentUser.getSelectedShop() == null) {
-            throw new RuntimeException("Please select a shop first");
+            throw new BadRequestException("Please select a shop first");
         }
 
         Order order = new Order();
-        order.setCustomerName(request.getCustomerName());
         order.setShop(currentUser.getSelectedShop());
         order.setUser(currentUser);
         order.setStatus("pending");
@@ -60,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> items = request.getItems().stream()
                 .map(itemDto -> {
                     MenuItem menuItem = menuItemRepository.findById(itemDto.getMenuItemId())
-                            .orElseThrow(() -> new RuntimeException("MenuItem not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found"));
                     OrderItem orderItem = new OrderItem();
                     orderItem.setOrder(order);
                     orderItem.setMenuItem(menuItem);
@@ -82,12 +84,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateOrder(Long id, OrderDto orderDto) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         // обновляем базовые поля
-        order.setCustomerName(orderDto.getCustomerName());
         Shop shop = shopRepository.findById(orderDto.getShopId())
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found"));
         order.setShop(shop);
 
         // пересобираем айтемы
@@ -95,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> items = orderDto.getItems().stream()
                 .map(itemDto -> {
                     MenuItem menuItem = menuItemRepository.findById(itemDto.getMenuItemId())
-                            .orElseThrow(() -> new RuntimeException("MenuItem not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found"));
                     OrderItem orderItem = new OrderItem();
                     orderItem.setOrder(order);
                     orderItem.setMenuItem(menuItem);
@@ -111,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id)) {
-            throw new RuntimeException("Order not found");
+            throw new ResourceNotFoundException("Order not found");
         }
         orderRepository.deleteById(id);
     }
@@ -138,14 +139,13 @@ public class OrderServiceImpl implements OrderService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UnauthorizedException("User not found"));
     }
 
     // --- Mappers ---
     private OrderDto toDto(Order order) {
         return new OrderDto(
                 order.getId(),
-                order.getCustomerName(),
                 order.getShop().getId(),
                 order.getItems().stream()
                         .map(item -> new OrderItemDto(

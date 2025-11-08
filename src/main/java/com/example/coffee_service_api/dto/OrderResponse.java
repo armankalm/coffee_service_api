@@ -7,7 +7,6 @@ import java.util.List;
 @Data
 public class OrderResponse {
     private Long id;
-    private String customerName;
     private String status;
     private LocalDateTime createdAt;
     private List<OrderItemDto> items;

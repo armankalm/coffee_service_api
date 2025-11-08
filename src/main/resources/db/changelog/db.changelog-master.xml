@@ -13,5 +13,6 @@
     <include file="db/changelog/changes/006-insert-test-users-and-orders.xml"/>
     <include file="db/changelog/changes/007-add-total-cost-to-orders.xml"/>
     <include file="db/changelog/changes/008-create-verification-codes-table.xml"/>
+    <include file="db/changelog/changes/009-update-orders-and-users-tables.xml"/>
 
 </databaseChangeLog>
