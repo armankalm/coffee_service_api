@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="009-update-orders-and-users-tables" author="arman">
+        <!-- Add ready_at column to orders table -->
+        <addColumn tableName="orders">
+            <column name="ready_at" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Remove customer_name column from orders table -->
+        <dropColumn tableName="orders" columnName="customer_name"/>
+
+        <!-- Add fullname column to users table -->
+        <addColumn tableName="users">
+            <column name="fullname" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
