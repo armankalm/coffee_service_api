@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: coffee_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: coffee_db
+      MYSQL_USER: coffee_user
+      MYSQL_PASSWORD: coffee_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - coffee-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coffee_app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+      DB_URL: jdbc:mysql://mysql:3306/coffee_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: coffee_user
+      DB_PASSWORD: coffee_password
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:-mySecretKeyForJWTTokenGenerationAndValidation1234567890}
+    ports:
+      - "8080:8080"
+    networks:
+      - coffee-network
+
+volumes:
+  mysql_data:
+
+networks:
+  coffee-network:
+    driver: bridge

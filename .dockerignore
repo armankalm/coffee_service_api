@@ -1,0 +1,10 @@
+target/
+.git/
+.idea/
+*.iml
+.env
+.DS_Store
+*.log
+
+# Keep .mvn for Maven wrapper
+!.mvn/
