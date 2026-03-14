@@ -1,26 +1,9 @@
-FROM eclipse-temurin:17-jdk-alpine AS build
-
-WORKDIR /app
-
-# Copy Maven wrapper and pom.xml
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline
-
-# Copy source code
-COPY src ./src
-
-# Build application
-RUN ./mvnw clean package -DskipTests
-
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Copy jar from build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy pre-built jar file
+COPY target/*.jar app.jar
 
 # Expose port
 EXPOSE 8080
